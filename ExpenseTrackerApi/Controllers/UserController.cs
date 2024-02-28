@@ -24,7 +24,7 @@ namespace ExpenseTrackerApi.Controllers
         {
             return Ok("Hi ");
         }
-      /*  private UserModel GetCurrentUser()
+       private UserModel GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity != null)
@@ -40,6 +40,6 @@ namespace ExpenseTrackerApi.Controllers
             }
             else return null;
         }
-      */
+      
     }
 }
