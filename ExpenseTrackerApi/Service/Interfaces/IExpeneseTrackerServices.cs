@@ -5,9 +5,10 @@ namespace ExpenseTrackerApi.Service.Interfaces
 {
     public interface IExpeneseTrackerServices
     {
-        Task<MessageHelperModel> CreateUserAsync(UserModel user);
-      
-        Task<(UserLogin, MessageHelperModel)> LoginUserAsync(string UserName, string PassWord);
+        //Task<(UserLogin, MessageHelperModel)> LoginUserAsync(string UserName, string PassWord);
+        Task<MessageHelperModel> AddSpendingAsync(Categories categories);
+        Task<long> GetTransportSum(DateTime fromDate, DateTime toDate);
+
 
     }
 }

@@ -19,57 +19,40 @@ namespace ExpenseTrackerApi.Controllers
             _services = services;
         }
 
-        [HttpGet("Admins")]
+       /* [HttpGet("Admins")]
         [Authorize]
         public string AdminsEndPoint()
         {
            // var currentUser = GetCurrentUser();
            // return Ok($"HI {currentUser.UserName},you are an{currentUser.Role}");
            return "401";
-        }
-
-        [HttpGet("Public")]
-       public IActionResult Public()
-        {
-            return Ok("Hi ");
-        }
-        /*/
-       private UserModel GetCurrentUser()
-        {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity != null)
-            {
-                var userClaims = identity.Claims;
-                return new UserModel
-                {
-                    UserName = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value,
-                    Email = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
-                    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
-                };
-
-            }
-            else return null;
-        }
-        */
-
-
-
-
+        }*/
         [HttpPost]
-        [Route("Register")]
-        public async Task<IActionResult> RegisterUserAsync(UserModel userModel)
+        [Route("AddSpending")]
+        public async Task<IActionResult> AddSpending( Categories categories)
         {
-            var res = await _services.CreateUserAsync(userModel);
+            var res = await _services.AddSpendingAsync(categories);
+            return Ok(res);
+
+        }
+        [HttpGet]
+        [Route("GetTransportSum")]
+        public async Task<IActionResult> TransportSum(DateTime fromDate, DateTime toDate)
+        {
+            var res = await _services.GetTransportSum(fromDate, toDate);
             return Ok(res);
         }
 
-        [HttpGet]
-        [Route("Login")]
-        public async Task<IActionResult> LogIn([MaxLength(30)] string UserName, [MaxLength(30)] string PassWord)
-        {
-            var res = await _services.LoginUserAsync(UserName, PassWord);
-            return Ok(new { UserInfo = res.Item1, Message = res.Item2 });
-        }
+
+
+
+
+
+
+
+
+
+
 
 
 

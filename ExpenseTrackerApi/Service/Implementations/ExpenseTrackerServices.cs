@@ -15,9 +15,11 @@ namespace ExpenseTrackerApi.Service.Implementations
         {
             _repository = repository;
         }
-        public async Task<MessageHelperModel> CreateUserAsync(UserModel user)
+
+        public async Task<MessageHelperModel> AddSpendingAsync(Categories categories)
         {
-            var res = await _repository.CreateUserAsync(user);
+           // var res = await _UnitOfWorkRepository.Todo.CreateTaskAsync(CreateTaskModel);
+            var res = await _repository.AddSpendingAsync(categories);
             var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
             if (res == 0)
             {
@@ -28,41 +30,21 @@ namespace ExpenseTrackerApi.Service.Implementations
                 msg.Message = "Sucessfully Added";
             }
             return msg;
-            
+
         }
-
-
-        public async Task<(UserLogin, MessageHelperModel)> LoginUserAsync(string UserName, string PassWord)
+        public async Task<long> GetTransportSum(DateTime fromdate, DateTime toDate)
         {
-  
+            var res = await _repository.GetTransportSum(fromdate, toDate);
+           // var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
+           return res;
 
-          
-            var user = await _repository.UserLogInAsync(UserName, PassWord);
-           
-
-            var msg = new MessageHelperModel { Message = "", StatusCode = 200 };
-
-            if (user == null)
-            {
-                msg.Message = "Invalid UserName";
-            }
-            else
-            {
-                if (user.Password == PassWord)
-                {
-                    msg.Message = "Welcome";
-
-                    //LoginController loginController = new LoginController(_configuration);
-                      // msg.Token = loginController.Generate(UserModel);
-                }
-                else
-                {
-                    msg.Message = "Invalid Password";
-                }
-                user.Password = null;
-            }
-            return (user, msg);
         }
+        
+
+
+
+
+
 
 
 
