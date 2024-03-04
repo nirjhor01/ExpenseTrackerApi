@@ -4,6 +4,7 @@ using ExpenseTrackerApi.Model;
 using ExpenseTrackerApi.Repository.Interfaces;
 using ExpenseTrackerApi.Service.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTrackerApi.Service.Implementations
 {
@@ -39,7 +40,32 @@ namespace ExpenseTrackerApi.Service.Implementations
            return res;
 
         }
-        
+
+        public async Task<( ExpensePercentage,MessageHelperModel)> GetExpensePercentage(int UserId) { 
+   
+            var res = await _repository.GetExpensePercentage(UserId);
+            var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
+            if (res == null)
+            {
+                msg.Message = "Faild to get percentage";
+            }
+            else
+            {
+                msg.Message = "Sucessfully get percentage";
+            }
+            return (res, msg);
+
+    }
+
+        public async Task<long> GetTotalSum(int Userid, DateTime fromdate, DateTime toDate)
+        {
+            var res = await _repository.GetTotalSum(Userid, fromdate, toDate);
+            // var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
+            return res;
+
+        }
+
+
 
 
 

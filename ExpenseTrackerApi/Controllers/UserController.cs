@@ -6,6 +6,7 @@ using System.Security.Claims;
 using ExpenseTrackerApi.Service;
 using ExpenseTrackerApi.Service.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.OpenApi.Validations;
 
 namespace ExpenseTrackerApi.Controllers
 {
@@ -41,6 +42,20 @@ namespace ExpenseTrackerApi.Controllers
         {
             var res = await _services.GetTransportSum(fromDate, toDate);
             return Ok(res);
+        }
+        [HttpGet]
+        [Route("GetTotalSum")]
+        public async Task<IActionResult> TotalSum(int UserId, DateTime fromDate, DateTime toDate)
+        {
+            var res = await _services.GetTotalSum(UserId, fromDate, toDate);
+            return Ok(res);
+        }
+        [HttpGet]
+        [Route("ExpensePercentage")]
+        public async Task<IActionResult> ExpensePercentage(int UserId)
+        {
+            var res = await _services.GetExpensePercentage(UserId);
+            return Ok(new { info = res.Item1, msg = res.Item2 }) ;
         }
 
 

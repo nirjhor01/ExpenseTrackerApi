@@ -10,6 +10,7 @@ namespace ExpenseTrackerApi.Repository.Interfaces
         Task<UserLogin?> UserLogInAsync(string UserName, string PassWord);
         Task<long> AddSpendingAsync(Categories categories);
         Task<long> GetTransportSum(DateTime fromDate, DateTime toDate);
-
+        Task<long> GetTotalSum(int Userid, DateTime fromDate, DateTime toDate);
+        Task<ExpensePercentage?> GetExpensePercentage(int UserId);
     }
 }
