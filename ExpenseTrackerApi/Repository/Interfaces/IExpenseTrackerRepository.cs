@@ -12,5 +12,6 @@ namespace ExpenseTrackerApi.Repository.Interfaces
         Task<long> GetTransportSum(DateTime fromDate, DateTime toDate);
         Task<long> GetTotalSum(int Userid, DateTime fromDate, DateTime toDate);
         Task<ExpensePercentage?> GetExpensePercentage(int UserId);
+        Task<List<Categories>> SearchById(int UserId);
     }
 }

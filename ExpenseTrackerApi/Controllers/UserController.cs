@@ -57,6 +57,13 @@ namespace ExpenseTrackerApi.Controllers
             var res = await _services.GetExpensePercentage(UserId);
             return Ok(new { info = res.Item1, msg = res.Item2 }) ;
         }
+        [HttpGet]
+        [Route("search")]
+        public async Task<IActionResult> Search(int UserId)
+        {
+            var res = await _services.SearchById(UserId);
+            return Ok(new { info = res.Item1, msg = res.Item2 });
+        }
 
 
 

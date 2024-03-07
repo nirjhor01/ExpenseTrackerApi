@@ -65,6 +65,22 @@ namespace ExpenseTrackerApi.Service.Implementations
 
         }
 
+        public async Task<(MessageHelperModel, List<Categories>)> SearchById(int UserId)
+        {
+            var res = await _repository.SearchById(UserId);
+            var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
+            if (res == null || res.Count == 0)
+            {
+                msg.Message = "Failed to get data";
+            }
+            else
+            {
+                msg.Message = "Successfully got the data";
+            }
+            return (msg, res);
+        }
+
+
 
 
 

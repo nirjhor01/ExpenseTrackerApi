@@ -6,6 +6,7 @@ using Dapper;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.HttpResults;
+using ExpenseTrackerApi.Helper;
 
 namespace ExpenseTrackerApi.Repository.Implementations
 {
@@ -42,12 +43,13 @@ namespace ExpenseTrackerApi.Repository.Implementations
 
         public async Task<long> AddSpendingAsync(Categories categories)
         {
+
             try
             {
-                var sql = "INSERT INTO [dbo].[Categories] " +
-                          "([UserId],[Transport],[Food],[EatingOut],[House],[Cloths],[Communication])" +
-                          "VALUES" +
-                          "(@UserId,@Transport,@Food,@EatingOut,@House,@Cloths,@Communication)";
+                var sql = @"INSERT INTO [dbo].[Categories] 
+                          ([UserId],[Transport],[Food],[EatingOut],[House],[Cloths],[Communication])
+                          VALUES
+                          (@UserId,@Transport,@Food,@EatingOut,@House,@Cloths,@Communication)";
 
                 using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
                 {
@@ -178,9 +180,30 @@ namespace ExpenseTrackerApi.Repository.Implementations
             
 
         }
+
+        public async Task<List<Categories>> SearchById(int UserId)
+        {
+            try
+            {
+                var sql = "SELECT * FROM dbo.Categories WHERE userid = @UserId";
+
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+                {
+                    await connection.OpenAsync(); // Open the connection
+                    var result = await connection.QueryAsync<Categories>(sql, new { UserId });
+                    return result.AsList(); // Convert the IEnumerable result to a List
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
     }
 
 
- }
+}
     
 

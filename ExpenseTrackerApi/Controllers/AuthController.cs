@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Validations;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace ExpenseTrackerApi.Controllers
 {
@@ -24,7 +25,7 @@ namespace ExpenseTrackerApi.Controllers
 
         [HttpGet]
         [Route("LogIn")]
-        public async Task<IActionResult> LogIn([MaxLength(30)] string UserName, [MaxLength(30)] string PassWord)
+        public async Task<IActionResult> LogIn(string UserName,  string PassWord)
         {
             var res = await _services.UserLogInAsync(UserName, PassWord);
             var tokens = _services.GenerateToken(UserName);
@@ -36,11 +37,12 @@ namespace ExpenseTrackerApi.Controllers
             // if(res.Item1 == one)
             // {
             // return Ok(new { info = res.Item1, msg = res.Item2 }) ;
-            return Ok(tokens);
-           // }
+            var s = new  {res, tokens};
+            return Ok(new { info = res.Item1, token = tokens });
+            // }
             //return Unauthorized();
             //return Ok(new { UserInfo = res.Item1, Message = res.Item2 });
-          
+
         }
 
 
@@ -57,15 +59,15 @@ namespace ExpenseTrackerApi.Controllers
         [HttpGet]
         [Authorize]
         [Route("Authorize")]
-        public IActionResult ProtectedEndpoint()
+        public string ProtectedEndpoint()
         {
             var tokens = _services.GenerateToken("Tokens");
             // User is authorized, return some data
             if (tokens != null)
             {
-                return Ok("You are authorized to access this endpoint.");
+                return tokens;
             }
-            return BadRequest();
+            return "Bad Req";
         }
 
     }
