@@ -9,7 +9,6 @@
         public int House {  get; set; }
         public int Cloths { get; set;}
         public int Communication { get; set;}
-        public int Total { get; set; }
         public DateTime DateTimeColumn { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.HttpResults;
 using ExpenseTrackerApi.Helper;
+using System.Linq;
 
 namespace ExpenseTrackerApi.Repository.Implementations
 {
@@ -41,20 +42,20 @@ namespace ExpenseTrackerApi.Repository.Implementations
         }
 
 
-        public async Task<long> AddSpendingAsync(Categories categories)
+        public async Task<long> AddSpendingAsync(Expense expense)
         {
 
             try
             {
-                var sql = @"INSERT INTO [dbo].[Categories] 
-                          ([UserId],[Transport],[Food],[EatingOut],[House],[Cloths],[Communication])
+                var sql = @"INSERT INTO [dbo].[Expense] 
+                          ([UserId],[Category],[DateTimeInfo])
                           VALUES
-                          (@UserId,@Transport,@Food,@EatingOut,@House,@Cloths,@Communication)";
+                          (@UserId,@Category,@DateTimeInfo)";
 
                 using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
                 {
                     connection.Open();
-                    var res = await connection.ExecuteAsync(sql, categories); // return  0 or 1
+                    var res = await connection.ExecuteAsync(sql, expense); // return  0 or 1
                     return res;
                 }
 
@@ -64,7 +65,29 @@ namespace ExpenseTrackerApi.Repository.Implementations
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<long> Deposit(Deposit deposit)
+        {
 
+            try
+            {
+                var sql = @"INSERT INTO [dbo].[Deposit] 
+                          ([UserId],[DateInfo],[Amount])
+                          VALUES
+                          (@UserId,@DateInfo,@Amount)";
+
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+                {
+                    connection.Open();
+                    var res = await connection.ExecuteAsync(sql, deposit); // return  0 or 1
+                    return res;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         public async Task<UserLogin?> UserLogInAsync(string UserName, string PassWord)
         {
@@ -85,31 +108,138 @@ namespace ExpenseTrackerApi.Repository.Implementations
         }
 
 
-        public async Task<long> GetTransportSum(DateTime fromDate, DateTime toDate)
+        public async Task<long> GetTransportSum(int UserId, DateTime fromDate, DateTime toDate)
         {
-            int transportSum = 0;
-
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+            try
             {
-                string query = "SELECT SUM(Transport) FROM Categories WHERE DateTimeColumn >= @FromDate AND DateTimeColumn <= @ToDate";
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@FromDate", fromDate);
-                command.Parameters.AddWithValue("@ToDate", toDate);
+                string query = "SELECT SUM(Transport) FROM Categories WHERE DateTimeColumn >= @FromDate AND DateTimeColumn <= @ToDate AND UserId = @UserId";
 
-                await connection.OpenAsync();
-
-                object result = await command.ExecuteScalarAsync();
-
-                if (result != DBNull.Value)
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
                 {
-                    transportSum = Convert.ToInt32(result);
+                    await connection.OpenAsync();
+
+                    // Execute the query using Dapper and retrieve the result
+                    long foodSum = await connection.QueryFirstOrDefaultAsync<long>(query, new { UserId, FromDate = fromDate, ToDate = toDate });
+
+                    return foodSum;
                 }
             }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<long> GetEatingOutSum(int UserId, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                string query = "SELECT SUM(EatingOut) FROM Categories WHERE DateTimeColumn >= @FromDate AND DateTimeColumn <= @ToDate AND UserId = @UserId";
 
-            return transportSum;
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+                {
+                    await connection.OpenAsync();
+
+                    // Execute the query using Dapper and retrieve the result
+                    long foodSum = await connection.QueryFirstOrDefaultAsync<long>(query, new { UserId, FromDate = fromDate, ToDate = toDate });
+
+                    return foodSum;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<long> GetHouseSum(int UserId, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                string query = "SELECT SUM(House) FROM Categories WHERE DateTimeColumn >= @FromDate AND DateTimeColumn <= @ToDate AND UserId = @UserId";
+
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+                {
+                    await connection.OpenAsync();
+
+                    // Execute the query using Dapper and retrieve the result
+                    long foodSum = await connection.QueryFirstOrDefaultAsync<long>(query, new { UserId, FromDate = fromDate, ToDate = toDate });
+
+                    return foodSum;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public async Task<long> GetTotalSum(int Userid, DateTime fromDate, DateTime toDate)
+        public async Task<long> GetClothsSum(int UserId, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                string query = "SELECT SUM(Cloths) FROM Categories WHERE DateTimeColumn >= @FromDate AND DateTimeColumn <= @ToDate AND UserId = @UserId";
+
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+                {
+                    await connection.OpenAsync();
+
+                    // Execute the query using Dapper and retrieve the result
+                    long foodSum = await connection.QueryFirstOrDefaultAsync<long>(query, new { UserId, FromDate = fromDate, ToDate = toDate });
+
+                    return foodSum;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<long> GetCommunicationSum(int UserId, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                string query = "SELECT SUM(Communication) FROM Categories WHERE DateTimeColumn >= @FromDate AND DateTimeColumn <= @ToDate AND UserId = @UserId";
+
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+                {
+                    await connection.OpenAsync();
+
+                    // Execute the query using Dapper and retrieve the result
+                    long foodSum = await connection.QueryFirstOrDefaultAsync<long>(query, new { UserId, FromDate = fromDate, ToDate = toDate });
+
+                    return foodSum;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<long> GetFoodSum(int UserId, DateTime fromDate, DateTime toDate)
+        {
+            try
+
+            {
+                string query = @"SELECT SUM(Food) FROM Categories WHERE DateTimeColumn >= @FromDate AND DateTimeColumn <= @ToDate AND UserId = @UserId";
+
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+                {
+                    await connection.OpenAsync();
+
+                    // Execute the query using Dapper and retrieve the result
+                    long foodSum = await connection.QueryFirstOrDefaultAsync<long>(query, new { UserId, FromDate = fromDate, ToDate = toDate });
+
+                    return foodSum;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public async Task<long> GetTotalSum(int UserId, DateTime fromDate, DateTime toDate)
         {
             int totalSum = 0;
 
@@ -117,24 +247,18 @@ namespace ExpenseTrackerApi.Repository.Implementations
             {
 
                 string query = @"
-    SELECT 
-        SUM(Transport) AS TransportSum,
-        SUM(Food) AS FoodSum,
-        SUM(EatingOut) AS EatingOutSum,
-        SUM(House) AS HouseSum,
-        SUM(Cloths) AS ClothsSum,
-        SUM(Communication) AS CommunicationSum,
-        SUM(Transport + Food + EatingOut + House + Cloths + Communication) AS TotalSum
+        SELECT 
+        SUM(Transport)  + SUM(Food)  +  SUM(EatingOut) + SUM(House) + SUM(Cloths) + SUM(Communication) AS TotalSum
         FROM Categories
         WHERE 
-        UserId = @Userid 
-";
-               // SqlCommand command = new SqlCommand(query, connection);
+        UserId = @UserId AND DateTimeColumn >= @FromDate AND DateTimeColumn <= @ToDate";
+                // SqlCommand command = new SqlCommand(query, connection);
 
                 await connection.OpenAsync();
 
                 // Execute the query using Dapper's QueryFirstOrDefaultAsync
-                var result = await connection.QueryAsync<Categories>(query, new { Userid , fromDate, toDate });
+                 var result = await connection.QueryFirstOrDefaultAsync<long>(query, new { UserId, FromDate = fromDate, ToDate = toDate });
+               // var result = await connection.QueryFirstOrDefaultAsync(query, new { UserId, FromDate = fromDate, ToDate = toDate });
 
                 if (result != null)
                 {
@@ -152,34 +276,26 @@ namespace ExpenseTrackerApi.Repository.Implementations
             {
                 using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
                 {
-                var query = @"
-                SELECT 
-                TransportPercentage = SUM(Transport) * 100.0 / NULLIF(SUM(Transport + Food + EatingOut + House + Cloths + Communication), 0),
-                FoodPercentage = SUM(Food) * 100.0 / NULLIF(SUM(Transport + Food + EatingOut + House + Cloths + Communication), 0),
-                EatingOutPercentage = SUM(EatingOut) * 100.0 / NULLIF(SUM(Transport + Food + EatingOut + House + Cloths + Communication), 0),
-                HousePercentage = SUM(House) * 100.0 / NULLIF(SUM(Transport + Food + EatingOut + House + Cloths + Communication), 0),
-                ClothsPercentage = SUM(Cloths) * 100.0 / NULLIF(SUM(Transport + Food + EatingOut + House + Cloths + Communication), 0),
-                CommunicationPercentage = SUM(Communication) * 100.0 / NULLIF(SUM(Transport + Food + EatingOut + House + Cloths + Communication), 0)
-                FROM 
-                Categories
-
-                WHERE
-                UserId = @UserId";
-
-                    var result = await connection.QueryFirstOrDefaultAsync<ExpensePercentage>(query, new { UserId});
+                    string query = @"
+            SELECT 
+                SUM(Transport) + SUM(Food) + SUM(EatingOut) + SUM(House) + SUM(Cloths) + SUM(Communication) AS TotalSum
+            FROM Categories
+            WHERE 
+                UserId = @UserId AND DateTimeColumn >= @FromDate AND DateTimeColumn <= @ToDate
+            GROUP BY UserId";
                     await connection.OpenAsync();
-                    return result;
 
-                    
+                    var result = await connection.QueryAsync<ExpensePercentage>(query, new { UserId });
+
+                    return result.SingleOrDefault();
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            
-
         }
+
 
         public async Task<List<Categories>> SearchById(int UserId)
         {
@@ -190,7 +306,7 @@ namespace ExpenseTrackerApi.Repository.Implementations
                 using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
                 {
                     await connection.OpenAsync(); // Open the connection
-                    var result = await connection.QueryAsync<Categories>(sql, new { UserId });
+                    var result = await connection.QueryAsync<Categories>(sql, new { UserId }); //QueryAsync is used to execute a SQL query that may return multiple rows of data.
                     return result.AsList(); // Convert the IEnumerable result to a List
                 }
             }
@@ -205,5 +321,5 @@ namespace ExpenseTrackerApi.Repository.Implementations
 
 
 }
-    
+
 
