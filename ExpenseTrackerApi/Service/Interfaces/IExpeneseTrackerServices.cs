@@ -15,7 +15,7 @@ namespace ExpenseTrackerApi.Service.Interfaces
         Task<long> GetClothsSum(int UserId, DateTime fromDate, DateTime toDate);
         Task<long> GetCommunicationSum(int UserId, DateTime fromDate, DateTime toDate);
         Task<(MessageHelperModel, List<Categories>)> SearchById(int UserId);
-        Task<(ExpensePercentage, MessageHelperModel)> GetExpensePercentage(int UserId);
+        Task<(List<ExpensePercentage>, MessageHelperModel)> GetExpensePercentage(int UserId);
         Task<long> GetTotalSum(int Userid, DateTime fromDate, DateTime toDate);
         Task<MessageHelperModel> Deposit(Deposit deposit);
 

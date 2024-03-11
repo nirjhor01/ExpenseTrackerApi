@@ -1,4 +1,4 @@
-using ExpenseTrackerApi.Repository.Interfaces;
+﻿using ExpenseTrackerApi.Repository.Interfaces;
 
 using ExpenseTrackerApi.Repository.Implementations;
 using ExpenseTrackerApi.Service.Implementations;
@@ -6,6 +6,10 @@ using ExpenseTrackerApi.Service.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.Options;
+using System.Net;
+using System;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +40,19 @@ builder.Services.AddTransient<IExpeneseTrackerServices, ExpenseTrackerServices>(
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 var app = builder.Build();
+/*
+app.UseExceptionHandler( options => {
+    options.Run(
+        async context =>
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            var ex = context.Features.Get<IExceptionHandlerFeature>();
+            if (ex != null)
+            {
+                await context.Response.WriteAsync(ex.Error.Message);
+            }
+        });
+});*/
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

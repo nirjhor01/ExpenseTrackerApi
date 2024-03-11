@@ -22,9 +22,9 @@ namespace ExpenseTrackerApi.Service.Implementations
             // var res = await _UnitOfWorkRepository.Todo.CreateTaskAsync(CreateTaskModel);
             var res = await _repository.AddSpendingAsync(expense);
             var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
-            if (res == 0)
+            if (res.Item2 <= 0)
             {
-                msg.Message = "Faild To Create";
+                msg.Message = "Expenditure exceeds deposit amount";
             }
             else
             {
@@ -77,7 +77,7 @@ namespace ExpenseTrackerApi.Service.Implementations
         }
 
 
-        public async Task<(ExpensePercentage, MessageHelperModel)> GetExpensePercentage(int UserId)
+        public async Task<(List<ExpensePercentage>, MessageHelperModel)> GetExpensePercentage(int UserId)
         {
 
             var res = await _repository.GetExpensePercentage(UserId);
