@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using ExpenseTrackerApi.Helper;
 using System.Linq;
 using System.Data.SqlTypes;
+using System.Threading.Tasks;
 
 namespace ExpenseTrackerApi.Repository.Implementations
 {
@@ -66,9 +67,9 @@ namespace ExpenseTrackerApi.Repository.Implementations
                    
 
                     var sql = @"INSERT INTO [dbo].[Expense] 
-                          ([UserId],[Category],[Amount],[DateTimeInfo])
+                          ([UserId],[Category],[Amount],[DateTimeInfo],[Note])
                           VALUES
-                          (@UserId,@Category,@Amount, @DateTimeInfo)";
+                          (@UserId,@Category,@Amount, @DateTimeInfo,@Note)";
                     var res = await connection.ExecuteAsync(sql, expense); // return  0 or 1
                     long dif = DepositAmount - expenditureAmount;
                     return (res, dif);
@@ -327,16 +328,16 @@ namespace ExpenseTrackerApi.Repository.Implementations
 
 
 
-        public async Task<List<Categories>> SearchById(int UserId)
+        public async Task<List<Expense>> SearchById(int UserId)
         {
             try
             {
-                var sql = "SELECT * FROM dbo.Categories WHERE userid = @UserId";
+                var sql = @"SELECT * FROM Expense WHERE userid = @UserId";
 
                 using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
                 {
                     await connection.OpenAsync(); // Open the connection
-                    var result = await connection.QueryAsync<Categories>(sql, new { UserId }); //QueryAsync is used to execute a SQL query that may return multiple rows of data.
+                    var result = await connection.QueryAsync<Expense>(sql, new { UserId }); //QueryAsync is used to execute a SQL query that may return multiple rows of data.
                     return result.AsList(); // Convert the IEnumerable result to a List
                 }
             }
@@ -346,6 +347,73 @@ namespace ExpenseTrackerApi.Repository.Implementations
             }
         }
 
+        public async Task<long> UpdateByIdAsync(Expense expense)
+        {
+            try
+            {
+
+                var sql = @"UPDATE [dbo].[Expense]
+                            SET [UserId] = @UserId, 
+                            [Category] = @Category,
+                            [Amount] = @Amount,
+                            [DateTimeInfo] = @DateTimeInfo 
+                            [Note] = @Note 
+                            WHERE [Id] = @Id";
+
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+                {
+                    connection.Open();
+                    var res = await connection.ExecuteAsync(sql, expense);
+
+                    return res;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        public async Task<long> DeleteByIdAsync(int Id)
+        {
+            try
+            {
+
+                var sql = @"DELETE FROM Expense WHERE Id = @Id";
+
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+                {
+                    connection.Open();
+                    var res = await connection.ExecuteAsync(sql, new {Id});
+
+                    return res;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        
+            public async Task<Expense> LastExpenseAsync(int UserId)
+            {
+            try
+            {
+
+                var sql = @"SELECT TOP 1 *FROM Expense WHERE UserId = @UserId ORDER BY DateTimeInfo DESC";
+
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
+                {
+                    connection.Open();
+                    var res = await connection.QueryAsync<Expense>(sql, new { UserId = UserId });
+
+                    return res.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
     }
 

@@ -17,7 +17,10 @@ namespace ExpenseTrackerApi.Repository.Interfaces
         Task<long> GetFoodSum(int UserId, DateTime fromDate, DateTime toDate);
         Task<long> GetTotalSum(int Userid, DateTime fromDate, DateTime toDate);
         Task<List<ExpensePercentage>> GetExpensePercentage(int UserId);
-        Task<List<Categories>> SearchById(int UserId);
-        public Task<long> Deposit(Deposit deposit);
+        Task<List<Expense>> SearchById(int UserId);
+        Task<long> Deposit(Deposit deposit);
+        Task<long> UpdateByIdAsync(Expense expense);
+        Task<long> DeleteByIdAsync(int Id);
+        Task<Expense> LastExpenseAsync(int UserId);
     }
 }

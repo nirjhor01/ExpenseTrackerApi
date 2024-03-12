@@ -1,7 +1,8 @@
 ﻿namespace ExpenseTrackerApi.Model
 {
     public class Categories
-    {
+    { 
+        public int Id { get; set; }
         public int UserId { get; set; }
         public int Transport {  get; set; }
         public int Food {  get; set; }

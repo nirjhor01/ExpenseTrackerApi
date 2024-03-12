@@ -78,8 +78,8 @@ namespace ExpenseTrackerApi.Service.Implementations
             else if (user != null && user.UserName == UserName && user.Password != PassWord) msg.Message = "Invalid Password";
             else if (user != null && user.UserName == UserName && user.Password == PassWord) msg.Message = "Authorized";
             else msg.Message = "Unuthorized";
-            long one = 1;
-            long zero = 0;
+            //long one = 1;
+            //long zero = 0;
             if (user != null)
             {
                 return (user, msg);

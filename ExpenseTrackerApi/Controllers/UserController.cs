@@ -112,6 +112,29 @@ namespace ExpenseTrackerApi.Controllers
             var res = await _services.SearchById(UserId);
             return Ok(new { info = res.Item1, msg = res.Item2 });
         }
+        [HttpPost]
+        [Route("update")]
+        public async Task<IActionResult> Update(Expense expense)
+        {
+            var res = await _services.UpdateByIdAsync(expense);
+            return Ok(res);
+        }
+
+
+        [HttpPost]
+        [Route("delete")]
+        public async Task<IActionResult> Delete(int Id)
+        {
+            var res = await _services.DeleteByIdAsync(Id);
+            return Ok(res);
+        }
+        [HttpGet]
+        [Route("lastExpense")]
+        public async Task<IActionResult> LastExpense(int UserId)
+        {
+            var res = await _services.LastExpenseAsync(UserId);
+            return Ok(res);
+        }
 
 
 

@@ -102,7 +102,7 @@ namespace ExpenseTrackerApi.Service.Implementations
 
         }
 
-        public async Task<(MessageHelperModel, List<Categories>)> SearchById(int UserId)
+        public async Task<(MessageHelperModel, List<Expense>)> SearchById(int UserId)
         {
             var res = await _repository.SearchById(UserId);
             var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
@@ -137,7 +137,55 @@ namespace ExpenseTrackerApi.Service.Implementations
             return msg;
 
         }
+        public async Task<MessageHelperModel> UpdateByIdAsync(Expense expense)
+        {
+            var res = await _repository.UpdateByIdAsync(expense);
+            var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
+            if (res == 0)
+            {
+                msg.Message = "Failed To Update";
+            }
+            else
+            {
+                msg.Message = "Sucessfully Updated";
+            }
+            return msg;
+       
+        }
 
+        public async Task<MessageHelperModel> DeleteByIdAsync(int Id)
+        {
+            var res = await _repository.DeleteByIdAsync(Id);
+            var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
+            if (res == 0)
+            {
+                msg.Message = "Failed To Delete Row";
+            }
+            else
+            {
+                msg.Message = "Sucessfully Deleted";
+            }
+            return msg;
+
+        }
+
+     
+
+        public async Task<Expense> LastExpenseAsync(int UserId)
+        {
+            var res = await _repository.LastExpenseAsync(UserId);
+            var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
+            if (res == null)
+            {
+                msg.Message = "Failed To Delete Row";
+            }
+            else
+            {
+                msg.Message = "Sucessfully Deleted";
+            }
+            return res;
+
+        }
 
 
 
