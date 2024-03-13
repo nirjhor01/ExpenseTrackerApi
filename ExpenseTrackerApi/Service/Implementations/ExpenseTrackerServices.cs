@@ -33,49 +33,10 @@ namespace ExpenseTrackerApi.Service.Implementations
             return msg;
 
         }
-        public async Task<long> GetTransportSum(int UserId, DateTime fromdate, DateTime toDate)
-        {
-            var res = await _repository.GetTransportSum(UserId, fromdate, toDate);
-            // var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
-            return res;
-
-        }
-        public async Task<long> GetFoodSum(int UserId, DateTime fromdate, DateTime toDate)
-        {
-            var res = await _repository.GetFoodSum(UserId, fromdate, toDate);
-            // var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
-            return res;
-
-        }
-        public async Task<long> GetEatingOutSum(int UserId, DateTime fromdate, DateTime toDate)
-        {
-            var res = await _repository.GetEatingOutSum(UserId, fromdate, toDate);
-            // var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
-            return res;
-
-        }
-        public async Task<long> GetHouseSum(int UserId, DateTime fromdate, DateTime toDate)
-        {
-            var res = await _repository.GetHouseSum(UserId, fromdate, toDate);
-            // var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
-            return res;
-
-        }
-        public async Task<long> GetClothsSum(int UserId, DateTime fromdate, DateTime toDate)
-        {
-            var res = await _repository.GetClothsSum(UserId, fromdate, toDate);
-            // var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
-            return res;
-
-        }
-        public async Task<long> GetCommunicationSum(int UserId, DateTime fromdate, DateTime toDate)
-        {
-            var res = await _repository.GetCommunicationSum(UserId, fromdate, toDate);
-            // var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
-            return res;
-
-        }
-
+   
+ 
+     
+ 
 
         public async Task<(List<ExpensePercentage>, MessageHelperModel)> GetExpensePercentage(int UserId)
         {
@@ -168,8 +129,24 @@ namespace ExpenseTrackerApi.Service.Implementations
             return msg;
 
         }
+        //Task<MessageHelperModel> GetSum(int UserId, string Category);
+        public async Task<(MessageHelperModel,long)> GetSum(int UserId, string Category, DateTime fromDate, DateTime toDate)
+        {
+            var res = await _repository.GetSum(UserId,Category,fromDate,toDate);
+            var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
+            if (res == 0)
+            {
+                msg.Message = "Failed To Retrive Information";
+            }
+            else
+            {
+                msg.Message = "Sucessfully Retrived";
+            }
+            return (msg,res);
 
-     
+        }
+
+
 
         public async Task<Expense> LastExpenseAsync(int UserId)
         {

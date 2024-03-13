@@ -8,12 +8,6 @@ namespace ExpenseTrackerApi.Service.Interfaces
     {
         //Task<(UserLogin, MessageHelperModel)> LoginUserAsync(string UserName, string PassWord);
         Task<MessageHelperModel> AddSpendingAsync(Expense expense);
-        Task<long> GetTransportSum(int UserId, DateTime fromDate, DateTime toDate);
-        Task<long> GetFoodSum(int UserId, DateTime fromDate, DateTime toDate);
-        Task<long> GetEatingOutSum(int UserId, DateTime fromDate, DateTime toDate);
-        Task<long> GetHouseSum(int UserId, DateTime fromDate, DateTime toDate);
-        Task<long> GetClothsSum(int UserId, DateTime fromDate, DateTime toDate);
-        Task<long> GetCommunicationSum(int UserId, DateTime fromDate, DateTime toDate);
         Task<(MessageHelperModel, List<Expense>)> SearchById(int UserId);
         Task<(List<ExpensePercentage>, MessageHelperModel)> GetExpensePercentage(int UserId);
         Task<long> GetTotalSum(int Userid, DateTime fromDate, DateTime toDate);
@@ -21,6 +15,7 @@ namespace ExpenseTrackerApi.Service.Interfaces
         Task<MessageHelperModel> UpdateByIdAsync(Expense expense);
         Task<MessageHelperModel> DeleteByIdAsync(int Id);
         Task<Expense> LastExpenseAsync(int UserId);
+        Task<(MessageHelperModel,long)> GetSum(int UserId, string Category, DateTime fromDate, DateTime toDate);
        
 
 

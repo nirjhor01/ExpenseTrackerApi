@@ -45,50 +45,8 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(res);
 
         }
-        [HttpGet]
-        [Route("GetTransportSum")]
-        public async Task<IActionResult> TransportSum(int UserId, DateTime fromDate, DateTime toDate)
-        {
-            var res = await _services.GetTransportSum(UserId, fromDate, toDate);
-            return Ok(res);
-        }
-
-        [HttpGet]
-        [Route("GetFoodSum")]
-        public async Task<IActionResult> FoodSum(int UserId, DateTime fromDate, DateTime toDate)
-        {
-            var res = await _services.GetFoodSum(UserId, fromDate, toDate);
-            return Ok(res);
-        }
-        [HttpGet]
-        [Route("GetEatingOutSum")]
-        public async Task<IActionResult> EatingOutSum(int UserId, DateTime fromDate, DateTime toDate)
-        {
-            var res = await _services.GetEatingOutSum(UserId, fromDate, toDate);
-            return Ok(res);
-        }
-        [HttpGet]
-        [Route("GetClothsSum")]
-        public async Task<IActionResult> ClothsSum(int UserId, DateTime fromDate, DateTime toDate)
-        {
-            var res = await _services.GetClothsSum(UserId, fromDate, toDate);
-            return Ok(res);
-        }
-
-        [HttpGet]
-        [Route("GetCommunicationSum")]
-        public async Task<IActionResult> CommunicationSum(int UserId, DateTime fromDate, DateTime toDate)
-        {
-            var res = await _services.GetCommunicationSum(UserId, fromDate, toDate);
-            return Ok(res);
-        }
-        [HttpGet]
-        [Route("GetHouseSum")]
-        public async Task<IActionResult> HouseSum(int UserId, DateTime fromDate, DateTime toDate)
-        {
-            var res = await _services.GetHouseSum(UserId, fromDate, toDate);
-            return Ok(res);
-        }
+  
+    
 
 
         [HttpGet]
@@ -134,6 +92,13 @@ namespace ExpenseTrackerApi.Controllers
         {
             var res = await _services.LastExpenseAsync(UserId);
             return Ok(res);
+        }
+        [HttpGet]
+        [Route("categorySum")]
+        public async Task<IActionResult> GetSum(int UserId, String Category, DateTime FromDate, DateTime ToDate)
+        {
+            var res = await _services.GetSum(UserId,Category,FromDate,ToDate);
+            return Ok(new { info = res.Item1, sum = res.Item2 });
         }
 
 
