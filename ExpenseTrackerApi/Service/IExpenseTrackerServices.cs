@@ -15,8 +15,8 @@ namespace ExpenseTrackerApi.Service.Interfaces
         Task<MessageHelperModel> UpdateByIdAsync(Expense expense);
         Task<MessageHelperModel> DeleteByIdAsync(int Id);
         Task<Expense> LastExpenseAsync(int UserId);
-        Task<(MessageHelperModel,long)> GetSum(int UserId, string Category, DateTime fromDate, DateTime toDate);
-       
+        Task<(MessageHelperModel, long)> GetSum(int UserId, string Category, DateTime fromDate, DateTime toDate);
+
 
 
     }

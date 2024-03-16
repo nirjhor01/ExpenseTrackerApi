@@ -1,4 +1,5 @@
-﻿using ExpenseTrackerApi.Helper;
+﻿using ExpenseTrackerApi.Authentication.Repository;
+using ExpenseTrackerApi.Helper;
 using ExpenseTrackerApi.Model;
 using ExpenseTrackerApi.Repository.Interfaces;
 using ExpenseTrackerApi.Service.Interfaces;
@@ -10,16 +11,16 @@ using System.Text;
 
 namespace ExpenseTrackerApi.Service.Implementations
 {
-    public class AuthenticationService : IAuthenticationService 
+    public class AuthenticationService : IAuthenticationService
     {
 
         private readonly IConfiguration _configuration;
-        private readonly IExpenseTrackerRepository _repository;
+        private readonly IAuthenticationRepository _authenticationRepository;
 
-        public AuthenticationService(IConfiguration configuration, IExpenseTrackerRepository repository)
+        public AuthenticationService(IConfiguration configuration, IAuthenticationRepository repository)
         {
             _configuration = configuration;
-            _repository = repository;
+            _authenticationRepository = repository;
         }
 
 
@@ -33,7 +34,7 @@ namespace ExpenseTrackerApi.Service.Implementations
             var claims = new[]
                 {
                  new Claim(ClaimTypes.NameIdentifier, Username),
-                
+
 
              };
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
@@ -45,10 +46,10 @@ namespace ExpenseTrackerApi.Service.Implementations
 
         }
 
-        public async Task<(UserLogin,MessageHelperModel)> UserLogInAsync(string UserName, string PassWord)
+        public async Task<(UserLogin, MessageHelperModel)> UserLogInAsync(string UserName, string PassWord)
         {
 
-            var user = await _repository.UserLogInAsync(UserName, PassWord);
+            var user = await _authenticationRepository.UserLogInAsync(UserName, PassWord);
             var msg = new MessageHelperModel { Message = "", StatusCode = 200 };
             /*
                         if (user == null)
@@ -84,16 +85,23 @@ namespace ExpenseTrackerApi.Service.Implementations
             {
                 return (user, msg);
             }
-            
+
             return (user, msg);
         }
 
         public async Task<MessageHelperModel> CreateUserAsync(UserModel user)
         {
-            var res = await _repository.CreateUserAsync(user);
+            var res = await _authenticationRepository.CreateUserAsync(user);
             var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
             if (res == 0)
             {
+                var log = new Log
+                {
+                    LogInformation = "User Created",
+
+
+
+                };
                 msg.Message = "Faild To Create";
             }
             else

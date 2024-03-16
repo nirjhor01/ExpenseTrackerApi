@@ -6,9 +6,7 @@ namespace ExpenseTrackerApi.Repository.Interfaces
 {
     public interface IExpenseTrackerRepository
     {
-        Task<long> CreateUserAsync(UserModel user);
-        Task<UserLogin?> UserLogInAsync(string UserName, string PassWord);
-        Task<(long,long)> AddSpendingAsync(Expense expense);
+        Task<(long, long)> AddSpendingAsync(Expense expense);
         Task<long> GetTotalSum(int Userid, DateTime fromDate, DateTime toDate);
         Task<List<ExpensePercentage>> GetExpensePercentage(int UserId);
         Task<List<Expense>> SearchById(int UserId);

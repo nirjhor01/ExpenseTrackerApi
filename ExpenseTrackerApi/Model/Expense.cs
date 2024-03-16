@@ -6,11 +6,10 @@ namespace ExpenseTrackerApi.Model
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        [Column(TypeName = "varchar(5)")]
-        public string Category { get; set; }
+        public string? Category { get; set; }
         public int Amount { get; set; }
         public DateTime DateTimeInfo { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
 
     }

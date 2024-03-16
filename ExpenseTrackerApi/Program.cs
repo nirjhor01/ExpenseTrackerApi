@@ -1,6 +1,9 @@
 ﻿using ExpenseTrackerApi.Repository.Interfaces;
 
 using ExpenseTrackerApi.Repository.Implementations;
+//using ExpenseTrackerApi.Repository;
+using ExpenseTrackerApi.Logger.Service;
+using ExpenseTrackerApi.Logger.Repository;
 using ExpenseTrackerApi.Service.Implementations;
 using ExpenseTrackerApi.Service.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,6 +13,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System;
+using ExpenseTrackerApi.Authentication.Repository;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +42,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IExpenseTrackerRepository, ExpenseTrackerRepository>();
 builder.Services.AddTransient<IExpeneseTrackerServices, ExpenseTrackerServices>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IAuthenticationRepository,AuthenticationRepository>();
+builder.Services.AddScoped<ILogService, LogService>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
 
 var app = builder.Build();
 /*

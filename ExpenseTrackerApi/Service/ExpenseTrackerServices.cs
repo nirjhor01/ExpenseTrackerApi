@@ -1,10 +1,13 @@
 ﻿using ExpenseTrackerApi.Controllers;
 using ExpenseTrackerApi.Helper;
+using ExpenseTrackerApi.Logger.Service;
 using ExpenseTrackerApi.Model;
+using ExpenseTrackerApi.Logger;
 using ExpenseTrackerApi.Repository.Interfaces;
 using ExpenseTrackerApi.Service.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using ExpenseTrackerApi.Logger.Repository;
 
 namespace ExpenseTrackerApi.Service.Implementations
 {
@@ -12,19 +15,30 @@ namespace ExpenseTrackerApi.Service.Implementations
     {
 
         private readonly IExpenseTrackerRepository _repository;
-        public ExpenseTrackerServices(IExpenseTrackerRepository repository)
+        private readonly ILogService _logService;
+
+        public ExpenseTrackerServices(IExpenseTrackerRepository repository, ILogService logService)
         {
             _repository = repository;
+            _logService = logService;
         }
 
         public async Task<MessageHelperModel> AddSpendingAsync(Expense expense)
         {
-            // var res = await _UnitOfWorkRepository.Todo.CreateTaskAsync(CreateTaskModel);
             var res = await _repository.AddSpendingAsync(expense);
-            var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
+            MessageHelperModel msg = new MessageHelperModel();
             if (res.Item2 <= 0)
             {
+                Log log = new Log
+                {
+                    LogInformation = "User Added Spending",
+                    TimeStamp = DateTime.Now
+                };
+                var logMsg = await _logService.CreateLog(log);
+
                 msg.Message = "Expenditure exceeds deposit amount";
+                msg.StatusCode = 200;
+                // return logMsg;
             }
             else
             {
@@ -32,11 +46,12 @@ namespace ExpenseTrackerApi.Service.Implementations
             }
             return msg;
 
+
         }
-   
- 
-     
- 
+
+
+
+
 
         public async Task<(List<ExpensePercentage>, MessageHelperModel)> GetExpensePercentage(int UserId)
         {
@@ -78,11 +93,11 @@ namespace ExpenseTrackerApi.Service.Implementations
             return (msg, res);
         }
 
-       // public Task<long> Deposit(Deposit deposit)
+        // public Task<long> Deposit(Deposit deposit)
 
 
 
-      public async Task<MessageHelperModel> Deposit(Deposit deposit)
+        public async Task<MessageHelperModel> Deposit(Deposit deposit)
         {
             // var res = await _UnitOfWorkRepository.Todo.CreateTaskAsync(CreateTaskModel);
             var res = await _repository.Deposit(deposit);
@@ -111,7 +126,7 @@ namespace ExpenseTrackerApi.Service.Implementations
                 msg.Message = "Sucessfully Updated";
             }
             return msg;
-       
+
         }
 
         public async Task<MessageHelperModel> DeleteByIdAsync(int Id)
@@ -130,9 +145,9 @@ namespace ExpenseTrackerApi.Service.Implementations
 
         }
         //Task<MessageHelperModel> GetSum(int UserId, string Category);
-        public async Task<(MessageHelperModel,long)> GetSum(int UserId, string Category, DateTime fromDate, DateTime toDate)
+        public async Task<(MessageHelperModel, long)> GetSum(int UserId, string Category, DateTime fromDate, DateTime toDate)
         {
-            var res = await _repository.GetSum(UserId,Category,fromDate,toDate);
+            var res = await _repository.GetSum(UserId, Category, fromDate, toDate);
             var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
             if (res == 0)
             {
@@ -142,7 +157,7 @@ namespace ExpenseTrackerApi.Service.Implementations
             {
                 msg.Message = "Sucessfully Retrived";
             }
-            return (msg,res);
+            return (msg, res);
 
         }
 

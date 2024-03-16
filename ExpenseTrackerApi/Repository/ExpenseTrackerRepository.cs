@@ -20,31 +20,10 @@ namespace ExpenseTrackerApi.Repository.Implementations
         {
             _configuration = configuration;
         }
-        public async Task<long> CreateUserAsync(UserModel userModel)
-        {
-            try
-            {
-                var sql = "INSERT INTO [dbo].[RegistrationTable] " +
-                          "([UserName],[Password],[Email],[Role])" +
-                          "VALUES" +
-                          "(@UserName,@Password,@Email,@Role)";
-
-                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
-                {
-                    connection.Open();
-                    var res = await connection.ExecuteAsync(sql, userModel); // return  0 or 1
-                    return res;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+       
 
 
-        public async Task<(long,long)> AddSpendingAsync(Expense expense)
+        public async Task<(long, long)> AddSpendingAsync(Expense expense)
         {
 
             try
@@ -54,12 +33,10 @@ namespace ExpenseTrackerApi.Repository.Implementations
                 using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
                 {
                     connection.Open();
-                    using (var trans= connection.BeginTransaction())
+                    using (var trans = connection.BeginTransaction())
                     {
-                        try 
+                        try
                         {
-
-
                             var DepositAmountQuery = @"select sum(Amount) as amount from Deposit";
                             var ExpenditureQuery = @"SELECT SUM(Amount) AS Amount FROM Expense";
                             var expenditure = await connection.QueryFirstOrDefaultAsync<long>(ExpenditureQuery, transaction: trans);
@@ -80,10 +57,10 @@ namespace ExpenseTrackerApi.Repository.Implementations
                             //trans.Rollback();
                             return (res, dif);
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             trans.Rollback();
-                            throw new Exception(ex.Message);
+                            throw;
                         }
                     }
                 }
@@ -118,31 +95,15 @@ namespace ExpenseTrackerApi.Repository.Implementations
             }
         }
 
-        public async Task<UserLogin?> UserLogInAsync(string UserName, string PassWord)
-        {
-            try
-            {
-                var sql = "SELECT * FROM dbo.RegistrationTable WHERE username = @UserName";
-                using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
-                {
-                    connection.Open();
-                    var result = await connection.QueryAsync<UserLogin>(sql, new { UserName });
-                    return result.FirstOrDefault();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-
-     
      
 
-  
 
-    
+
+
+
+
+
+
 
 
 
@@ -232,7 +193,7 @@ namespace ExpenseTrackerApi.Repository.Implementations
             try
             {
 
-                
+
 
                 using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
                 {
@@ -263,7 +224,7 @@ namespace ExpenseTrackerApi.Repository.Implementations
                 {
                     await connection.OpenAsync();
                     var sql = @"DELETE FROM Expense WHERE Id = @Id";
-                    var res = await connection.ExecuteAsync(sql, new {Id});
+                    var res = await connection.ExecuteAsync(sql, new { Id });
                     return res;
                 }
             }
@@ -299,7 +260,7 @@ namespace ExpenseTrackerApi.Repository.Implementations
         }
 
         public async Task<Expense?> LastExpenseAsync(int UserId)
-            {
+        {
             try
             {
 
