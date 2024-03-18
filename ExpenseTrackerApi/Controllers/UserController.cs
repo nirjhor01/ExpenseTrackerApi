@@ -29,6 +29,7 @@ namespace ExpenseTrackerApi.Controllers
            return "401";
         }*/
         [HttpPost]
+        [Authorize]
         [Route("AddSpending")]
         public async Task<IActionResult> AddSpending( Expense expense)
         {
@@ -36,7 +37,7 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(res);
 
         }
-
+        [Authorize]
         [HttpPost]
         [Route("Deposit")]
         public async Task<IActionResult> Deposit(Deposit deposit)
@@ -45,10 +46,10 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(res);
 
         }
-  
-    
 
 
+
+        [Authorize]
         [HttpGet]
         [Route("GetTotalSum")]
         public async Task<IActionResult> TotalSum(int UserId, DateTime fromDate, DateTime toDate)
@@ -56,13 +57,16 @@ namespace ExpenseTrackerApi.Controllers
             var res = await _services.GetTotalSum(UserId, fromDate, toDate);
             return Ok(res);
         }
+
         [HttpGet]
+        [Authorize]
         [Route("ExpensePercentage")]
         public async Task<IActionResult> ExpensePercentage(int UserId)
         {
             var res = await _services.GetExpensePercentage(UserId);
             return Ok(new { info = res.Item1, msg = res.Item2 }) ;
         }
+        [Authorize]
         [HttpGet]
         [Route("search")]
         public async Task<IActionResult> Search(int UserId)
@@ -70,6 +74,7 @@ namespace ExpenseTrackerApi.Controllers
             var res = await _services.SearchById(UserId);
             return Ok(new { info = res.Item1, msg = res.Item2 });
         }
+        [Authorize]
         [HttpPost]
         [Route("update")]
         public async Task<IActionResult> Update(Expense expense)
@@ -78,7 +83,7 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(res);
         }
 
-
+        [Authorize]
         [HttpPost]
         [Route("delete")]
         public async Task<IActionResult> Delete(int Id)
@@ -86,6 +91,7 @@ namespace ExpenseTrackerApi.Controllers
             var res = await _services.DeleteByIdAsync(Id);
             return Ok(res);
         }
+        [Authorize]
         [HttpGet]
         [Route("lastExpense")]
         public async Task<IActionResult> LastExpense(int UserId)
@@ -93,6 +99,8 @@ namespace ExpenseTrackerApi.Controllers
             var res = await _services.LastExpenseAsync(UserId);
             return Ok(res);
         }
+
+        [Authorize]
         [HttpGet]
         [Route("categorySum")]
         public async Task<IActionResult> GetSum(int UserId, String Category, DateTime FromDate, DateTime ToDate)

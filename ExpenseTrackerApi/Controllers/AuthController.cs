@@ -29,19 +29,9 @@ namespace ExpenseTrackerApi.Controllers
         {
             var res = await _services.UserLogInAsync(UserName, PassWord);
             var tokens = _services.GenerateToken(UserName);
-            // return Ok(x);
-            //if(res != null)
-            // Console.WriteLine(tokens);
-            //return Ok(tokens);
-            //long one = 1;
-            // if(res.Item1 == one)
-            // {
-            // return Ok(new { info = res.Item1, msg = res.Item2 }) ;
-            var s = new  {res, tokens};
-            return Ok(new { info = res.Item1, token = tokens });
-            // }
-            //return Unauthorized();
-            //return Ok(new { UserInfo = res.Item1, Message = res.Item2 });
+
+            return Ok(tokens);
+            
 
         }
 
@@ -56,7 +46,7 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(res);
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Authorize]
         [Route("Authorize")]
         public string ProtectedEndpoint()
@@ -68,7 +58,7 @@ namespace ExpenseTrackerApi.Controllers
                 return tokens;
             }
             return "Bad Req";
-        }
+        }*/
 
     }
 }
