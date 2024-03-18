@@ -45,7 +45,6 @@ namespace ExpenseTrackerApi.Repository.Implementations
                             var DepositAmount = Deposit == 0 ? 0 : Deposit;
 
 
-
                             var sql = @"INSERT INTO [dbo].[Expense] 
                             ([UserId],[Category],[Amount],[DateTimeInfo],[Note])
                             VALUES
@@ -115,13 +114,9 @@ namespace ExpenseTrackerApi.Repository.Implementations
             {
 
                 string query = @"SELECT SUM(Amount) AS TotalAmount FROM Expense WHERE UserId = @UserId AND DateTimeInfo >= @FromDate AND DateTimeInfo <= @ToDate";
-                // SqlCommand command = new SqlCommand(query, connection);
 
                 await connection.OpenAsync();
-
-                // Execute the query using Dapper's QueryFirstOrDefaultAsync
                 var result = await connection.QueryFirstOrDefaultAsync<long>(query, new { UserId, FromDate = fromDate, ToDate = toDate });
-                // var result = await connection.QueryFirstOrDefaultAsync(query, new { UserId, FromDate = fromDate, ToDate = toDate });
 
                 if (result != 0)
                 {
@@ -178,8 +173,8 @@ namespace ExpenseTrackerApi.Repository.Implementations
                 {
                     await connection.OpenAsync();
                     var sql = @"SELECT * FROM Expense WHERE userid = @UserId";
-                    var result = await connection.QueryAsync<Expense>(sql, new { UserId }); //QueryAsync is used to execute a SQL query that may return multiple rows of data.
-                    return result.AsList(); // Convert the IEnumerable result to a List
+                    var result = await connection.QueryAsync<Expense>(sql, new { UserId }); 
+                    return result.AsList();
                 }
             }
             catch (Exception ex)
