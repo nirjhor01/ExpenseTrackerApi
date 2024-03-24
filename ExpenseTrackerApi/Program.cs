@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using System.Net;
 using System;
 using ExpenseTrackerApi.Authentication.Repository;
+using ExpenseTrackerApi.JWT;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +46,8 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IAuthenticationRepository,AuthenticationRepository>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
+builder.Services.AddScoped<IJWTManagerRepository, JWTManagerRepository>();
+builder.Services.AddScoped<IUserServiceRepository, UserServiceRepository>();
 
 var app = builder.Build();
 /*
@@ -71,7 +74,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-//app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 
 app.MapControllers();

@@ -243,7 +243,7 @@ namespace ExpenseTrackerApi.Repository.Implementations
                 {
                     await connection.OpenAsync();
 
-                    string query = @"SELECT SUM(Amount) AS TotalAmount FROM Expense WHERE UserId = @UserId AND Category=@Category AND DateTimeInfo >= @FromDate AND DateTimeInfo <= @ToDate";
+                    string query = @"SELECT ISNULL(SUM(Amount),0) AS TotalAmount FROM Expense WHERE UserId = @UserId AND Category=@Category AND DateTimeInfo >= @FromDate AND DateTimeInfo <= @ToDate";
                     var res = await connection.QueryFirstOrDefaultAsync<long>(query, new { UserId = UserId, Category = Category, FromDate = fromDate, ToDate = toDate });
                     return res;
                 }
