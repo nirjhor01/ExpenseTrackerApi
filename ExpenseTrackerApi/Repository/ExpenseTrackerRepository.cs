@@ -20,56 +20,63 @@ namespace ExpenseTrackerApi.Repository.Implementations
         {
             _configuration = configuration;
         }
-       
+
 
 
         public async Task<(long, long)> AddSpendingAsync(Expense expense)
         {
-
             try
             {
-
-
                 using (var connection = new SqlConnection(_configuration.GetConnectionString("CrudConnection")))
                 {
-                    connection.Open();
+                    await connection.OpenAsync(); // Asynchronous open operation
                     using (var trans = connection.BeginTransaction())
                     {
                         try
                         {
-                            var DepositAmountQuery = @"select sum(Amount) as amount from Deposit";
-                            var ExpenditureQuery = @"SELECT SUM(Amount) AS Amount FROM Expense";
-                            var expenditure = await connection.QueryFirstOrDefaultAsync<long>(ExpenditureQuery, transaction: trans);
-                            var Deposit = await connection.QueryFirstOrDefaultAsync<long>(DepositAmountQuery, transaction: trans);
-                            var expenditureAmount = expenditure == 0 ? 0 : expenditure;
-                            var DepositAmount = Deposit == 0 ? 0 : Deposit;
+                            // Corrected SQL queries
+                            var DepositAmountQuery = @"SELECT ISNULL(SUM(Amount), 0) AS Amount FROM Deposit";
+                            var ExpenditureQuery = @"SELECT ISNULL(SUM(Amount), 0) AS Amount FROM Expense";
 
+                            // Execute queries asynchronously
+                            var expenditure = await connection.ExecuteScalarAsync<long>(ExpenditureQuery, transaction: trans);
+                            var deposit = await connection.ExecuteScalarAsync<long>(DepositAmountQuery, transaction: trans);
 
-                            var sql = @"INSERT INTO [dbo].[Expense] 
-                            ([UserId],[Category],[Amount],[DateTimeInfo],[Note])
-                            VALUES
-                            (@UserId,@Category,@Amount, @DateTimeInfo,@Note)";
-                            var res = await connection.ExecuteAsync(sql, expense, transaction: trans); // return  0 or 1
-                            long dif = DepositAmount - expenditureAmount;
+                            // Cast to long is unnecessary as ExecuteScalarAsync already returns long
+                            var expenditureAmount = expenditure;
+                            var depositAmount = deposit;
 
+                            // Corrected SQL statement, added parameters
+                            var sql = @"INSERT INTO [dbo].[Expense] ([UserId],[Category],[Amount],[DateTimeInfo],[Note]) 
+                                VALUES (@UserId, @Category, @Amount, @DateTimeInfo, @Note)";
+
+                            // ExecuteAsync method expects an object parameter for the parameters in the query
+                            var res = await connection.ExecuteAsync(sql, expense, transaction: trans);
+
+                            // Calculate the difference between deposits and expenditures
+                            long difference = depositAmount - expenditureAmount;
+
+                            // Commit transaction if everything is successful
                             trans.Commit();
-                            //trans.Rollback();
-                            return (res, dif);
+
+                            return (res, difference);
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
+                            // Handle exceptions and rollback transaction if an error occurs
                             trans.Rollback();
-                            throw;
+                            throw new Exception("Error occurred while processing the request.", ex);
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                // Throw the exception if any error occurs during the connection or opening transaction
+                throw new Exception("Error occurred while establishing database connection.", ex);
             }
         }
+
         public async Task<long> Deposit(Deposit deposit)
         {
 
