@@ -30,7 +30,7 @@ namespace ExpenseTrackerApi.Controllers
 
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Route("LogIn")]
         public async Task<IActionResult> LogIn(string UserName,  string PassWord)
         {
@@ -40,7 +40,7 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(JsonSerializer.Serialize(s));
             
 
-        }
+        }*/
 
 
 
@@ -50,7 +50,7 @@ namespace ExpenseTrackerApi.Controllers
         public async Task<IActionResult> RegisterUserAsync(UserModel userModel)
         {
             var res = await _services.CreateUserAsync(userModel);
-            return Ok(res);
+            return Ok(res.StatusCode);
         }
 
         /*[HttpGet]
@@ -70,7 +70,7 @@ namespace ExpenseTrackerApi.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        [Route("authenticate-user")]
+        [Route("LogIn")]
         public async Task<IActionResult> AuthenticateAsync(UserLogin usersdata)
         {
             var validUser = await _userServiceRepository.IsValidUserAsync(usersdata);

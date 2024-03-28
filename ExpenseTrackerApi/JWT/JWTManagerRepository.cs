@@ -31,13 +31,19 @@ namespace ExpenseTrackerApi.JWT
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var tokenKey = Encoding.UTF8.GetBytes(_iconfiguration["JWT:Key"]);
+                var issuer = _iconfiguration["JWT:Issuer"];
+                var audience = _iconfiguration["JWT:Audience"];
+
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
-                  {
-                    new Claim(ClaimTypes.Name, userName)
-                  }),
-                    Expires = DateTime.Now.AddMinutes(1),
+                    {
+                        new Claim(ClaimTypes.Name, userName)
+                    }),
+
+                    Expires = DateTime.Now.AddMinutes(5),
+                    Issuer = issuer,
+                    Audience = audience,
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
                 };
 
@@ -47,9 +53,11 @@ namespace ExpenseTrackerApi.JWT
             }
             catch (Exception ex)
             {
+                // Handle exceptions
                 return null;
             }
         }
+
 
         /*   public string GenerateRefreshToken()
            {
@@ -63,27 +71,40 @@ namespace ExpenseTrackerApi.JWT
 
         public string GenerateRefreshToken()
         {
-            var expirationMinutes = int.Parse(_iconfiguration["JWT:RefreshTokenExpirationMinutes"]);
-            var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
+            try
             {
-                rng.GetBytes(randomNumber);
-                var refreshToken = Convert.ToBase64String(randomNumber);
-
-                // Add expiration time to the refresh token
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var tokenDescriptor = new SecurityTokenDescriptor
+                var expirationMinutes = int.Parse(_iconfiguration["JWT:RefreshTokenExpirationMinutes"]);
+                var randomNumber = new byte[32];
+                using (var rng = RandomNumberGenerator.Create())
                 {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                new Claim("refreshToken", refreshToken)
-                    }),
-                    Expires = DateTime.UtcNow.AddMinutes(expirationMinutes),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_iconfiguration["JWT:Key"])), SecurityAlgorithms.HmacSha256Signature)
-                };
-                tokenHandler.CreateToken(tokenDescriptor);
+                    rng.GetBytes(randomNumber);
+                    var refreshToken = Convert.ToBase64String(randomNumber);
 
-                return refreshToken;
+                    // Add expiration time to the refresh token
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var issuer = _iconfiguration["JWT:Issuer"];
+                    var audience = _iconfiguration["JWT:Audience"];
+                    var tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                        Subject = new ClaimsIdentity(new Claim[]
+                        {
+                    new Claim("refreshToken", refreshToken)
+                        }),
+                        Expires = DateTime.UtcNow.AddMinutes(expirationMinutes),
+                        Issuer = issuer,
+                        Audience = audience,
+                        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_iconfiguration["JWT:Key"])), SecurityAlgorithms.HmacSha256Signature)
+                    };
+
+                    tokenHandler.CreateToken(tokenDescriptor);
+
+                    return refreshToken;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                return null;
             }
         }
 

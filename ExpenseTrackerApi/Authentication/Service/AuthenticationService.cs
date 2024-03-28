@@ -30,18 +30,23 @@ namespace ExpenseTrackerApi.Service.Implementations
         public string GenerateToken(string Username)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
             var claims = new[]
                 {
                  new Claim(ClaimTypes.NameIdentifier, Username),
 
 
              };
+
+
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
                 expires: DateTime.Now.AddMinutes(15),
                 signingCredentials: credentials);
+
             return new JwtSecurityTokenHandler().WriteToken(token);
 
         }
@@ -98,7 +103,6 @@ namespace ExpenseTrackerApi.Service.Implementations
                 var log = new Log
                 {
                     LogInformation = "User Created",
-
 
 
                 };

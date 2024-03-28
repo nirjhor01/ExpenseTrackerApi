@@ -57,7 +57,7 @@ namespace ExpenseTrackerApi.Controllers
             // Return the total sum as a JSON response
             return Ok(new { TotalSum = totalSum });
         }
-
+        [Authorize]
         [HttpGet]
         [Route("ExpensePercentage")]
         public async Task<IActionResult> ExpensePercentage(int UserId)
