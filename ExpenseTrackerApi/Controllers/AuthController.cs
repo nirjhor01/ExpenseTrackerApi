@@ -96,7 +96,8 @@ namespace ExpenseTrackerApi.Controllers
             };
 
            await _userServiceRepository.AddUserRefreshTokens(obj);
-            return Ok(token);
+
+            return Ok(200);
         }
 
         [AllowAnonymous]

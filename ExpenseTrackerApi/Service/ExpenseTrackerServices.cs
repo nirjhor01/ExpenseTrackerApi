@@ -29,24 +29,24 @@ namespace ExpenseTrackerApi.Service.Implementations
             MessageHelperModel msg = new MessageHelperModel();
             if (res.Item2 <= 0)
             {
-                Log log = new Log
+                /*Log log = new Log
                 {
                     LogInformation = "Expenditure exceeds deposit amount",
                     TimeStamp = DateTime.Now
                 };
                 var logMsg = await _logService.CreateLog(log);
 
-                msg.Message = "Expenditure exceeds deposit amount";
+                msg.Message = "Expenditure exceeds deposit amount";*/
                 msg.StatusCode = 200;
             }
             else
             {
-                Log log = new Log
+               /* Log log = new Log
                 {
                     LogInformation = "Sucessfully Added Spending",
                     TimeStamp = DateTime.Now
                 };
-                var logMsg = await _logService.CreateLog(log);
+                var logMsg = await _logService.CreateLog(log);*/
                 msg.Message = "Sucessfully Spending";
             }
             return msg;
@@ -100,22 +100,22 @@ namespace ExpenseTrackerApi.Service.Implementations
             var msg = new MessageHelperModel { StatusCode = 200, Message = "" };
             if (res == null || res.Count == 0)
             {
-                Log log = new Log
+               /* Log log = new Log
                 {
                     LogInformation = "Failed to get data by user",
                     TimeStamp = DateTime.Now
                 };
-                var logMsg = await _logService.CreateLog(log);
+                var logMsg = await _logService.CreateLog(log);*/
                 msg.Message = "Failed to get data";
             }
             else
             {
-                Log log = new Log
+                /*Log log = new Log
                 {
                     LogInformation = "Successfully got the data",
                     TimeStamp = DateTime.Now
                 };
-                var logMsg = await _logService.CreateLog(log);
+                var logMsg = await _logService.CreateLog(log);*/
                 msg.Message = "Successfully got the data";
             }
             return (msg, res);
